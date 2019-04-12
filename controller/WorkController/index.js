@@ -1,5 +1,6 @@
 let dbhelper = require("../../lib/dbHelper");
 let fs = require("fs");
+let async = require("async");
 
 module.exports = {
   getWorks: function() {
@@ -18,7 +19,6 @@ module.exports = {
   },
   upload: function() {
     return function(req, res, next) {
-      console.log(req.files);
       var file = req.files;
       var arrPath = [];
       for (var i = 0; i < file.length; i++) {
@@ -37,12 +37,11 @@ module.exports = {
         });
         arrPath.push({ path: pathName }); //保存的图片路径
       }
-      console.log(arrPath);
       res.json({ status: 1, data: arrPath });
     };
   },
-  getType:function(){
-    return function(req,res,next){
+  getType: function() {
+    return function(req, res, next) {
       let sql = "SELECT * FROM sort_tb";
       dbhelper.query(sql, [], function(err, result) {
         if (!err) {
@@ -51,6 +50,53 @@ module.exports = {
           res.json("查询作品分类出错了!");
         }
       });
-    }
+    };
+  },
+  releaseWork: function() {
+    return function(req, res, next) {
+      function addWork(cb) {
+        let insertSQL = "INSERT INTO works VALUES(?,?,?,?,?,?);";
+        let params = [
+          req.body.w_id,
+          req.body.photos[0].p_path,
+          req.body.w_content,
+          req.body.w_title,
+          req.body.u_id,
+          req.body.w_sort
+        ];
+        console.log(params);
+        dbhelper.query(insertSQL, params, (err, result) => {
+          if(!err){
+            console.log(result);
+            cb(err, result);
+          }
+        });
+      }
+      function addPhotos(cb) {
+          let params =[];
+          let insertSQL = "";
+          req.body.photos.forEach(ele => {
+          insertSQL +=
+             `INSERT INTO photos_tb VALUES(${ele.p_id},${ele.w_id},${ele.p_path};`;
+          });
+          console.log(insertSQL);
+          dbhelper.query(insertSQL, [], (err, result) => {
+            console.log("111");
+            if (!err) {
+              console.log(result);
+              cb(err, result);
+            }else{
+              console.log(err);
+            }
+          });
+      }
+      async.series([addPhotos,addWork], (err, values) => {
+        if (!err) {
+          res.json({ status: 1, data: "作品添加成功" });
+        } else {
+          res.json({ status: -1, data: "作品添加失败" });
+        }
+      });
+    };
   }
 };

@@ -5,6 +5,7 @@
   "dependencies": {
     "animate.css": "^3.7.0",
     "antd-mobile": "^2.2.8",
+    "async": "^2.6.2",
     "axios": "^0.18.0",
     "iscroll": "^5.2.0",
     "jquery": "^3.3.1",

@@ -1,6 +1,5 @@
 let express = require("express");
 let path = require("path");
-let fs = require("fs");
 let multer = require("multer");
 
 const upload = multer({ dest: "./public/upload/" });
@@ -27,3 +26,5 @@ adminRouter.get("/getFollowList", FollowController.getFollowList())
 adminRouter.post("/upload", upload.array("files", 6), WorkController.upload());
 //获取作品分类列表
 adminRouter.get("/getType", WorkController.getType());
+//发布作品
+adminRouter.post("/releaseWork", WorkController.releaseWork());
