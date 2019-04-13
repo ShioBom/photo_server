@@ -3,6 +3,7 @@ let fs = require("fs");
 let async = require("async");
 
 module.exports = {
+  //拿到所有的作品数据
   getWorks: function() {
     return function(req, res, next) {
       let querySQL =
@@ -17,6 +18,7 @@ module.exports = {
       });
     };
   },
+  //将作品图片存储到服务器中去
   upload: function() {
     return function(req, res, next) {
       var file = req.files;
@@ -40,6 +42,7 @@ module.exports = {
       res.json({ status: 1, data: arrPath });
     };
   },
+  //获得作品分类
   getType: function() {
     return function(req, res, next) {
       let sql = "SELECT * FROM sort_tb";
@@ -52,45 +55,47 @@ module.exports = {
       });
     };
   },
+  //发布作品，并将作品数据存储到数据库中去
   releaseWork: function() {
     return function(req, res, next) {
       function addWork(cb) {
         let insertSQL = "INSERT INTO works VALUES(?,?,?,?,?,?);";
+        let coverPic = "http\:\/\/192.168.56.1\:3001\/upload\/" + req.body.photos[0].p_path;
         let params = [
           req.body.w_id,
-          req.body.photos[0].p_path,
+          coverPic,
           req.body.w_content,
           req.body.w_title,
           req.body.u_id,
           req.body.w_sort
         ];
-        console.log(params);
         dbhelper.query(insertSQL, params, (err, result) => {
-          if(!err){
+          if (!err) {
             console.log(result);
             cb(err, result);
+          }else{
+            console.log(err);
           }
         });
       }
       function addPhotos(cb) {
-          let params =[];
-          let insertSQL = "";
-          req.body.photos.forEach(ele => {
-          insertSQL +=
-             `INSERT INTO photos_tb VALUES(${ele.p_id},${ele.w_id},${ele.p_path};`;
-          });
-          console.log(insertSQL);
-          dbhelper.query(insertSQL, [], (err, result) => {
-            console.log("111");
-            if (!err) {
-              console.log(result);
-              cb(err, result);
-            }else{
-              console.log(err);
-            }
-          });
+        let params = [];
+        req.body.photos.forEach(ele => {
+          let p_path = "http\:\/\/192.168.56.1\:3001\/upload\/" + ele.p_path;
+          console.log(p_path);
+          let arr = [ele.p_id, req.body.w_id, p_path];
+          params.push(arr);
+        });
+        let insertSQL = "INSERT INTO photos_tb VALUES ?";
+        dbhelper.query(insertSQL, [params], (err, result) => {
+          if (!err) {
+            cb(err, result);
+          } else {
+            console.log(err);
+          }
+        });
       }
-      async.series([addPhotos,addWork], (err, values) => {
+      async.series([addPhotos, addWork], (err, values) => {
         if (!err) {
           res.json({ status: 1, data: "作品添加成功" });
         } else {
