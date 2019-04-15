@@ -103,5 +103,18 @@ module.exports = {
         }
       });
     };
+  },
+  getWorkDetail:function(){
+    return function(req,res,next){
+      let sql="";
+      let params=[];
+      dbhelper.query(sql,params,(err,result)=>{
+        if(!err){
+          
+        }else{
+          console.log(err);
+        }
+      })
+    }
   }
 };

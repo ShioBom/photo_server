@@ -2,7 +2,7 @@
 
 ##### 运行步骤
 ```
-node app
+nodemon app
 开启node服务器
 
 npm start

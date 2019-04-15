@@ -4,16 +4,22 @@ let multer = require("multer");
 
 const upload = multer({ dest: "./public/upload/" });
 
-const log_RegController = require("../controller/log_RegController");
+const UserController = require("../controller/UserController");
 const WorkController = require("../controller/WorkController");
 const FollowController = require("../controller/FollowController");
 
 const adminRouter = express.Router();
 module.exports = adminRouter;
 //注册接口s
-adminRouter.post("/Register", log_RegController.Register());
+adminRouter.post("/Register", UserController.Register());
 //登录接口
-adminRouter.post("/Login", log_RegController.Login())
+adminRouter.post("/Login", UserController.Login());
+//查询关注的人数
+adminRouter.post("/getFollowerNum",UserController.getFollowNum());
+//查询粉丝数
+adminRouter.post("/getFansNum", UserController.getFansNum());
+//查询作品数
+adminRouter.post("/getWorkNum", UserController.getWorkNum());
 //作品信息显示接口
 adminRouter.get("/getWorks", WorkController.getWorks())
 //关注
