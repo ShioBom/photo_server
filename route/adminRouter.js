@@ -34,3 +34,6 @@ adminRouter.post("/upload", upload.array("files", 6), WorkController.upload());
 adminRouter.get("/getType", WorkController.getType());
 //发布作品
 adminRouter.post("/releaseWork", WorkController.releaseWork());
+//获取作品图片数据
+adminRouter.post("/getWorkDetail", WorkController.getWorkDetail());
+

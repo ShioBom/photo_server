@@ -106,12 +106,15 @@ module.exports = {
   },
   getWorkDetail:function(){
     return function(req,res,next){
-      let sql="";
-      let params=[];
+      let sql =
+        "SELECT u.u_id,u_name,`u_portrait`,w.w_id,`w_title`,`w_content`,`p_path` FROM works AS w,photos_tb AS p,userinfo AS u WHERE u.u_id =? AND w.w_id=? AND w.w_id=p.w_id AND u.u_id=w.u_id;";
+      let params=[req.body.u_id,req.body.w_id];
       dbhelper.query(sql,params,(err,result)=>{
         if(!err){
-          
+          console.log(result);
+          res.json({status:1,msg:"获取图片数据成功",result})
         }else{
+          res.json({ status: -1, msg: "获取图片数据失败"})
           console.log(err);
         }
       })
