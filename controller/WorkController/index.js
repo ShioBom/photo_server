@@ -34,7 +34,7 @@ module.exports = {
           file[i].originalname.split(".")[1];
         fs.rename(req.files[i].path, pathName, function(err) {
           if (err) {
-            throw err;
+            throw err; 
           }
         });
         arrPath.push({ path: pathName }); //保存的图片路径
@@ -59,7 +59,8 @@ module.exports = {
   releaseWork: function() {
     return function(req, res, next) {
       function addWork(cb) {
-        let insertSQL = "INSERT INTO works VALUES(?,?,?,?,?,?);";
+        let insertSQL =
+          "INSERT INTO works VALUES(?,?,?,?,?,?);";
         let coverPic = "http\:\/\/192.168.56.1\:3001\/upload\/" + req.body.photos[0].p_path;
         let params = [
           req.body.w_id,
@@ -69,9 +70,9 @@ module.exports = {
           req.body.u_id,
           req.body.w_sort
         ];
+        console.log(params)
         dbhelper.query(insertSQL, params, (err, result) => {
           if (!err) {
-            console.log(result);
             cb(err, result);
           }else{
             console.log(err);
@@ -82,7 +83,6 @@ module.exports = {
         let params = [];
         req.body.photos.forEach(ele => {
           let p_path = "http\:\/\/192.168.56.1\:3001\/upload\/" + ele.p_path;
-          console.log(p_path);
           let arr = [ele.p_id, req.body.w_id, p_path];
           params.push(arr);
         });
@@ -104,6 +104,7 @@ module.exports = {
       });
     };
   },
+  //获取作品详情
   getWorkDetail:function(){
     return function(req,res,next){
       let sql =
@@ -115,6 +116,59 @@ module.exports = {
           res.json({status:1,msg:"获取图片数据成功",result})
         }else{
           res.json({ status: -1, msg: "获取图片数据失败"})
+          console.log(err);
+        }
+      })
+    }
+  },
+  //获取作品评论数据
+  getComments:function(){
+    return function (req, res, next) {
+      let sql =
+        "SELECT `u_name`,`u_portrait`,`c_comment`,`c_time` FROM comment_tb AS c JOIN userinfo AS u ON c.u_id=u.u_id WHERE w_id=?;";
+      let params = req.body.w_id;
+      dbhelper.query(sql, params, (err, result) => {
+        if (!err) {
+          console.log(result);
+          res.json({ status: 1, msg: "获取评论数据成功",result })
+        } else {
+          res.json({ status: -1, msg: "获取评论数据失败" })
+          console.log(err);
+        }
+      })
+    }
+  },
+  //发表评论
+  addComment: function () {
+    return function (req, res, next) {
+      let sql = "INSERT INTO comment_tb(`c_comment`,`u_id`,`c_time`,`w_id`) VALUES(?,?,?,?)";
+      let params = [
+        req.body.c_comment,
+        req.body.u_id,
+        req.body.c_time,
+        req.body.w_id
+      ];
+      dbhelper.query(sql, params, (err, result) => {
+        if (!err) {
+          console.log(result);
+          res.json({ status: 1, msg: "评论成功"})
+        } else {
+          res.json({ status: -1, msg: "评论失败" })
+          console.log(err);
+        }
+      })
+    }
+  },
+  //获取个人作品信息
+  getOwnWorks:function(){
+    return function(req,res,next){
+      let sql = "SELECT * FROM works WHERE u_id=?;";
+      let params=req.body.u_id;
+      dbhelper.query(sql,params,(err,result)=>{
+        if(!err){
+          res.json({ status: 1, result:result})
+        }else{
+          res.json({status:-1,msg:"获取信息失败"})
           console.log(err);
         }
       })

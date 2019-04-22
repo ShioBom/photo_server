@@ -29,11 +29,18 @@ adminRouter.post("/unFollow", FollowController.unFollow())
 //查询某用户的关注列表
 adminRouter.get("/getFollowList", FollowController.getFollowList())
 //上传图片的接口
-adminRouter.post("/upload", upload.array("files", 6), WorkController.upload());
+adminRouter.post("/upload", upload.array("files", 20), WorkController.upload());
 //获取作品分类列表
 adminRouter.get("/getType", WorkController.getType());
 //发布作品
 adminRouter.post("/releaseWork", WorkController.releaseWork());
 //获取作品图片数据
 adminRouter.post("/getWorkDetail", WorkController.getWorkDetail());
+//获取作品评论信息
+adminRouter.post("/getComments", WorkController.getComments());
+//发布评论
+adminRouter.post("/addComment", WorkController.addComment());
+//查询登录用户已经发布的作品
+adminRouter.post("/getOwnWorks", WorkController.getOwnWorks());
 
+ 
