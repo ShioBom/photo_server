@@ -28,6 +28,8 @@ adminRouter.post("/Follow", FollowController.Follow())
 adminRouter.post("/unFollow", FollowController.unFollow())
 //查询某用户的关注列表
 adminRouter.get("/getFollowList", FollowController.getFollowList())
+//查询用户的粉丝列表
+adminRouter.post("/getFansList", FollowController.getFansList());
 //上传图片的接口
 adminRouter.post("/upload", upload.array("files", 20), WorkController.upload());
 //获取作品分类列表

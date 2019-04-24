@@ -40,6 +40,7 @@ module.exports = {
         arrPath.push({ path: pathName }); //保存的图片路径
       }
       res.json({ status: 1, data: arrPath });
+      console.log("upload成功！")
     };
   },
   //获得作品分类
@@ -61,13 +62,13 @@ module.exports = {
       function addWork(cb) {
         let insertSQL =
           "INSERT INTO works VALUES(?,?,?,?,?,?);";
-        let coverPic = "http\:\/\/192.168.56.1\:3001\/upload\/" + req.body.photos[0].p_path;
+        let coverPic = "http\:\/\/192.168.137.1\:3001\/upload\/" + req.body.photos[0].p_path;
         let params = [
           req.body.w_id,
           coverPic,
           req.body.w_content,
           req.body.w_title,
-          req.body.u_id,
+          req.body.u_id, 
           req.body.w_sort
         ];
         console.log(params)
@@ -82,8 +83,8 @@ module.exports = {
       function addPhotos(cb) {
         let params = [];
         req.body.photos.forEach(ele => {
-          let p_path = "http\:\/\/192.168.56.1\:3001\/upload\/" + ele.p_path;
-          let arr = [ele.p_id, req.body.w_id, p_path];
+          let p_path = "http\:\/\/192.168.137.1\:3001\/upload\/" + ele.p_path;
+          let arr = [ele.p_id, req.body.w_id, p_path,req.body.p_width,req.body.p_height];
           params.push(arr);
         });
         let insertSQL = "INSERT INTO photos_tb VALUES ?";
