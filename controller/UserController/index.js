@@ -1,4 +1,5 @@
 let dbhelper = require("../../lib/dbHelper");
+let fs = require("fs");
 module.exports = log_RegController = {
   Register: function() {
     return function(req, res, next) {
@@ -129,5 +130,43 @@ module.exports = log_RegController = {
         }
       });
     };
-  }
+  },
+  //上传头像并返回头像路径
+  uploadPortrait: function () {
+    return function (req, res, next) {
+      var file = req.file;
+      var pathName =
+          "public/img/portrait/" + file.originalname.split(".")[0]+
+          "." +
+          file.originalname.split(".")[1];
+        fs.rename(req.file.path, pathName, function (err) {
+          if (err) {
+            throw err;
+          }
+        });
+
+      res.json({ status: 1, path: pathName.replace("public","http://192.168.137.1:3001") });
+      console.log("upload头像成功！")
+    };
+  },
+  //发布作品，并将作品数据存储到数据库中去
+  storePortrait: function () {
+    return function (req, res, next) {
+        let sql =
+          "UPDATE userinfo SET u_portrait = ? WHERE u_id = ?";
+        let src = req.body.path;
+        let params = [
+          src,
+          req.body.u_id,
+        ];
+        console.log(params);
+        dbhelper.query(sql, params, (err, result) => {
+          if (!err) {
+            res.json({status:1,msg:"头像更改成功"});
+          } else {
+            console.log(err);
+          }
+        });
+      }
+  },
 };

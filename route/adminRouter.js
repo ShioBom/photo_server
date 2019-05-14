@@ -2,8 +2,6 @@ let express = require("express");
 let path = require("path");
 let multer = require("multer");
 
-const upload = multer({ dest: "./public/upload/" });
-
 const UserController = require("../controller/UserController");
 const WorkController = require("../controller/WorkController");
 const FollowController = require("../controller/FollowController");
@@ -20,6 +18,13 @@ adminRouter.post("/getFollowerNum",UserController.getFollowNum());
 adminRouter.post("/getFansNum", UserController.getFansNum());
 //查询作品数
 adminRouter.post("/getWorkNum", UserController.getWorkNum());
+//设置上传头像的路径
+let upload = multer({ dest: "./public/img/portrait/" });
+//上传头像并返回头像地址
+adminRouter.post("/uploadPortrait", upload.single('file'), UserController.uploadPortrait());
+adminRouter.post("/storePortrait", UserController.storePortrait());
+
+
 //作品信息显示接口
 adminRouter.get("/getWorks", WorkController.getWorks())
 //关注
@@ -31,6 +36,7 @@ adminRouter.get("/getFollowList", FollowController.getFollowList())
 //查询用户的粉丝列表
 adminRouter.post("/getFansList", FollowController.getFansList());
 //上传图片的接口
+upload = multer({ dest: "./public/upload/" });
 adminRouter.post("/upload", upload.array("files", 20), WorkController.upload());
 //获取作品分类列表
 adminRouter.get("/getType", WorkController.getType());
