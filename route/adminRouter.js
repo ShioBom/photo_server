@@ -2,6 +2,7 @@ let express = require("express");
 let path = require("path");
 let multer = require("multer");
 
+
 const UserController = require("../controller/UserController");
 const WorkController = require("../controller/WorkController");
 const FollowController = require("../controller/FollowController");
@@ -10,6 +11,11 @@ const adminRouter = express.Router();
 module.exports = adminRouter;
 //注册接口s
 adminRouter.post("/Register", UserController.Register());
+//发送邮件的接口
+adminRouter.post("/send", UserController.send());
+//邮箱校验的接口
+adminRouter.get("/check/:id", UserController.check());
+
 //登录接口
 adminRouter.post("/Login", UserController.Login());
 //查询关注的人数
@@ -22,6 +28,7 @@ adminRouter.post("/getWorkNum", UserController.getWorkNum());
 let upload = multer({ dest: "./public/img/portrait/" });
 //上传头像并返回头像地址
 adminRouter.post("/uploadPortrait", upload.single('file'), UserController.uploadPortrait());
+//存储头像
 adminRouter.post("/storePortrait", UserController.storePortrait());
 
 

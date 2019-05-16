@@ -1,12 +1,15 @@
 let dbhelper = require("../../lib/dbHelper");
 let fs = require("fs");
+const send = require("../../lib/sendMail");
+const crypto = require("crypto");
+
 module.exports = log_RegController = {
   Register: function() {
     return function(req, res, next) {
       let body = req.body;
-      let params = [body.uname, body.upwd];
+      let params = [body.uname, body.upwd,body.email];
       let querySQL = "SELECT * FROM userinfo WHERE u_name=?;";
-      let insertSQL = "INSERT INTO userinfo(`u_name`,`u_pwd`) VALUES(?,?);";
+      let insertSQL = "INSERT INTO userinfo(`u_name`,`u_pwd`,`u_email`) VALUES(?,?,?);";
       console.log(body.uname);
       //验证用户名是否已经存在
       dbhelper.query(querySQL, body.uname, function(err, result) {
@@ -41,6 +44,56 @@ module.exports = log_RegController = {
         }
       });
     };
+  },
+  /**
+   * @description 向邮箱发送邮件的接口
+   */
+  send:function(){
+    return function (req, res, next){
+      console.log(req.body.email);
+      let date = new Date();
+      date.setMinutes(date.getMinutes() + 20);
+      let timer = date.getTime();
+      //加密
+      var cipher = crypto.createCipher('aes192', "secret");
+      //利用注册的邮箱和失效时间生成一串数据做伪路径加到链接后面
+      var enc = cipher.update(req.body.email + "|" + timer, 'utf8', 'hex'); //编码方式从utf-8转为hex;
+      enc += cipher.final('hex'); //编码方式从转为hex;
+      console.log("enc" + enc);
+      //这个按钮一点击,则向后台发送数据
+      let strContent = `<a href="http://192.168.137.1:3001/admin/check/${enc}">点击链接激活账号</a>`;
+      //查询数据库,拿到邮箱账号
+      //给当前注册用户绑定的邮箱发送信息
+      send(req.body.email, strContent);
+      res.json({status:1,msg:"邮件发送成功"})
+    }
+  },
+  /**
+   * @description 邮箱校验的接口
+   */
+  check:function(){
+    return function(request, response, next){
+      //解密
+      let text = request.params.id;//邮箱账号加时间戳
+      var decipher = crypto.createDecipher('aes192', "secret");
+      var dec = decipher.update(text, 'hex', 'utf8'); //编码方式从hex转为utf-8;
+      dec += decipher.final('utf8'); //编码方式从utf-8;
+      var arr = dec.split("|");//分割成邮箱和时间两部分
+      var date = new Date();
+      //如果时间是大于当前时间,说明在规定时间内验证了
+      if (arr[1] > date.getTime()) {
+        let sql = "UPDATE userinfo SET u_status=1  WHERE u_email=? ";
+        dbhelper.query(sql, arr[0], function (err) {
+          if (!err) {
+            response.json({msg:"验证成功"});
+          }
+        })
+      } else {
+        response.json({
+          msg: "验证失败!"
+        });
+      }
+    }
   },
   Login: function() {
     return function(req, res, next) {
