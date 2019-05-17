@@ -142,11 +142,10 @@ module.exports = {
   //发表评论
   addComment: function () {
     return function (req, res, next) {
-      let sql = "INSERT INTO comment_tb(`c_comment`,`u_id`,`c_time`,`w_id`) VALUES(?,?,?,?)";
+      let sql = "INSERT INTO comment_tb(`c_comment`,`u_id`,`w_id`) VALUES(?,?,?)";
       let params = [
         req.body.c_comment,
         req.body.u_id,
-        req.body.c_time,
         req.body.w_id
       ];
       dbhelper.query(sql, params, (err, result) => {

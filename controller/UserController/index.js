@@ -65,7 +65,7 @@ module.exports = log_RegController = {
       //查询数据库,拿到邮箱账号
       //给当前注册用户绑定的邮箱发送信息
       send(req.body.email, strContent);
-      res.json({status:1,msg:"邮件发送成功"})
+      res.json({status:1,msg:"激活邮件已经发送到您的邮箱,请确认激活"})
     }
   },
   /**
