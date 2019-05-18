@@ -18,6 +18,24 @@ module.exports = {
       });
     };
   },
+  //根据关键字查询作品
+  queryWorks:function() {
+    return function (req, res, next) {
+      let params = req.body.keyword;
+      let sql = "SELECT `w_id`,`w_img`,`w_content`,`w_title`,works.u_id,`u_name`,`u_portrait` FROM works ,userinfo WHERE works.u_id=userinfo.u_id AND CONCAT(`w_content`,`w_title`)LIKE ?;"
+      dbhelper.query(sql, params, function (err, result) {
+        if (!err) {
+          if(result.length>=1){
+            res.json({ status: 1, msg: "数据获取成功",result});
+          }else{
+            res.json({ status: 0, msg: "没有与该关键字匹配的数据呢！" });
+          }
+        } else {
+          res.json({status:-1,msg:"查询数据库遇到问题了"});
+        }
+      });
+    };
+  },
   //将作品图片存储到服务器中去
   upload: function() {
     return function(req, res, next) {

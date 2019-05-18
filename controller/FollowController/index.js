@@ -158,5 +158,35 @@ module.exports = {
               }
           });
       }
-  }
+  },
+  //根据关键字查询用户
+  queryUserByStr(){
+    return function (req, res, next) {
+      console.log(req.body.keyword)
+      let sql =
+        "SELECT `u_id`,`u_name`,`u_portrait` FROM userinfo WHERE u_name LIKE ?;";
+      dbhelper.query(sql, req.body.keyword, function (err, result) {
+        if (!err) {
+          if (result.length >= 1) {
+            res.json({
+              msg: "成功查询到用户数据",
+              status: 1,
+              result
+            });
+          } else {
+            res.json({
+              msg: "没有与该关键字匹配的用户",
+              status: 0
+            });
+          }
+        } else {
+          res.json({
+            msg: "数据库查询失败，sql语句执行出错",
+            status: -1
+          });
+          console.log(err);
+        }
+      });
+    }
+  },
 };

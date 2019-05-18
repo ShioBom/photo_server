@@ -32,8 +32,6 @@ adminRouter.post("/uploadPortrait", upload.single('file'), UserController.upload
 adminRouter.post("/storePortrait", UserController.storePortrait());
 
 
-//作品信息显示接口
-adminRouter.get("/getWorks", WorkController.getWorks())
 //关注
 adminRouter.post("/Follow", FollowController.Follow())
 //取消关注
@@ -42,6 +40,12 @@ adminRouter.post("/unFollow", FollowController.unFollow())
 adminRouter.get("/getFollowList", FollowController.getFollowList())
 //查询用户的粉丝列表
 adminRouter.post("/getFansList", FollowController.getFansList());
+adminRouter.post("/queryUserByStr", FollowController.queryUserByStr());
+
+
+
+//作品信息显示接口
+adminRouter.get("/getWorks", WorkController.getWorks())
 //上传图片的接口
 upload = multer({ dest: "./public/upload/" });
 adminRouter.post("/upload", upload.array("files", 20), WorkController.upload());
@@ -57,5 +61,8 @@ adminRouter.post("/getComments", WorkController.getComments());
 adminRouter.post("/addComment", WorkController.addComment());
 //查询登录用户已经发布的作品
 adminRouter.post("/getOwnWorks", WorkController.getOwnWorks());
+//搜索作品的接口
+adminRouter.post("/queryWorks", WorkController.queryWorks());
+
 
  
