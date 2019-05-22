@@ -30,7 +30,10 @@ let upload = multer({ dest: "./public/img/portrait/" });
 adminRouter.post("/uploadPortrait", upload.single('file'), UserController.uploadPortrait());
 //存储头像
 adminRouter.post("/storePortrait", UserController.storePortrait());
-
+//查询用户信息
+adminRouter.post("/queryUserByID", UserController.queryUserByID());
+//根据关键字搜索用户
+adminRouter.post("/updateUserByID", UserController.updateUserByID());
 
 //关注
 adminRouter.post("/Follow", FollowController.Follow())
@@ -40,6 +43,7 @@ adminRouter.post("/unFollow", FollowController.unFollow())
 adminRouter.get("/getFollowList", FollowController.getFollowList())
 //查询用户的粉丝列表
 adminRouter.post("/getFansList", FollowController.getFansList());
+//根据关键字搜索用户
 adminRouter.post("/queryUserByStr", FollowController.queryUserByStr());
 
 
@@ -63,6 +67,7 @@ adminRouter.post("/addComment", WorkController.addComment());
 adminRouter.post("/getOwnWorks", WorkController.getOwnWorks());
 //搜索作品的接口
 adminRouter.post("/queryWorks", WorkController.queryWorks());
-
+//根据作品ID删除作品
+adminRouter.post("/DeleteWork", WorkController.DeleteWork());
 
  

@@ -190,5 +190,51 @@ module.exports = {
         }
       })
     }
+  },
+  //删除作品
+  DeleteWork: function () {
+    return function (req, res, next) {
+      function DeleteWork(cb) {
+        let insertSQL =
+          "DELETE FROM works WHERE w_id=?;";
+        let params = req.body.w_id;
+        dbhelper.query(insertSQL, params, (err, result) => {
+          if (!err) {
+            cb(err, result);
+          } else {
+            console.log(err);
+          }
+        });
+      }
+      function DeletePhotos(cb) {
+        let params = req.body.w_id;
+        let insertSQL = "DELETE FROM photos_tb WHERE w_id=?;";
+        dbhelper.query(insertSQL, [params], (err, result) => {
+          if (!err) {
+            cb(err, result);
+          } else {
+            console.log(err);
+          }
+        });
+      }
+      function DeleteReviews(cb) {
+        let params = req.body.w_id;
+        let insertSQL = "DELETE FROM comment_tb WHERE w_id=?;";
+        dbhelper.query(insertSQL, params, (err, result) => {
+          if (!err) {
+            cb(err, result);
+          } else {
+            console.log(err);
+          }
+        });
+      }
+      async.series([DeleteReviews, DeletePhotos, DeleteWork], (err, values) => {
+        if (!err) {
+          res.json({ status: 1, msg: "作品删除成功" });
+        } else {
+          res.json({ status: -1, msg: "作品删除失败" });
+        }
+      });
+    };
   }
 };

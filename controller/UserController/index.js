@@ -188,8 +188,14 @@ module.exports = log_RegController = {
   uploadPortrait: function () {
     return function (req, res, next) {
       var file = req.file;
+      var u_id=req.u_id;
+      console.log(file,u_id);
       var pathName =
-          "public/img/portrait/" + file.originalname.split(".")[0]+
+        "public/img/portrait/"+
+          Math.random()
+            .toString()
+            .split(".")[1] +
+          Date.now() +
           "." +
           file.originalname.split(".")[1];
         fs.rename(req.file.path, pathName, function (err) {
@@ -202,7 +208,7 @@ module.exports = log_RegController = {
       console.log("upload头像成功！")
     };
   },
-  //发布作品，并将作品数据存储到数据库中去
+  //将头像数据存储到数据库中去
   storePortrait: function () {
     return function (req, res, next) {
         let sql =
@@ -221,5 +227,71 @@ module.exports = log_RegController = {
           }
         });
       }
+  },
+  //查询用户信息
+  queryUserByID: function () {
+    return function (req, res, next) {
+      let sql =
+        "SELECT `u_name`,`u_sex`,`u_email`,`u_signature`,`u_birthday` FROM userinfo WHERE u_id=?;";
+      let params = req.body.u_id;
+      dbhelper.query(sql, params, (err, result) => {
+        if (!err) {
+          if(result.length>=1){
+            res.json({
+              status: 1,
+              msg: "成功获取到用户信息",
+              result: result[0]
+            });
+          }else{
+            res.json({
+              status: 0,
+              msg: "没有匹配的用户,确定登录了吗",
+              result: result[0]
+            });
+          }
+        } else {
+          res.json({
+            status: -1,
+            msg: "用户信息获取接口异常"
+          });
+          console.log(err);
+        }
+      });
+    };
+  },
+  //修改用户信息
+  updateUserByID: function () {
+    return function (req, res, next) {
+      let sql =
+        "UPDATE userinfo SET u_name=?,u_sex=?,u_email=?,u_signature=?,u_birthday=? WHERE u_id=?;";
+      let params = [
+        req.body.u_name,
+        req.body.u_sex,
+        req.body.u_email,
+        req.body.u_signature,
+        req.body.u_birthday,
+        req.body.u_id];
+        console.log(params)
+      dbhelper.query(sql, params, (err, result) => {
+        if (!err) {
+          if (result.affectedRows >= 1) {
+            res.json({
+              status: 1,
+              msg: "信息修改成功",
+            });
+          } else {
+            res.json({
+              status: 0,
+              msg: "信息修改失败",
+            });
+          }
+        } else {
+          res.json({
+            status: -1,
+            msg: "用户信息修改接口异常"
+          });
+        }
+      });
+    };
   },
 };

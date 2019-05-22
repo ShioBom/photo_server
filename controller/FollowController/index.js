@@ -132,7 +132,8 @@ module.exports = {
   },
   getFansList(){
       return function(req,res,next){
-          let params = req.body.id;
+          let params = req.body.u_id;
+          console.log(params);
           let sql =
             "SELECT `follower`,`u_portrait`,`u_name` FROM user_follow AS f INNER JOIN userinfo AS u ON f.follower=u.u_id WHERE f.u_id=?;";
           dbhelper.query(sql, params, function (err, result) {
