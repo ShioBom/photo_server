@@ -148,7 +148,7 @@ module.exports = log_RegController = {
   getFansNum: function() {
     return function(req, res, next) {
       let sql =
-        "SELECT COUNT(u_id) AS fans_num FROM user_follow WHERE u_id=? AND follower IS NOT NULL;";
+        "SELECT COUNT(u_id) AS fans_num FROM user_follow  WHERE u_id=? AND follower IS NOT NULL;";
       let params = req.body.id;
       dbhelper.query(sql, params, (err, result) => {
         if (!err) {
@@ -263,13 +263,9 @@ module.exports = log_RegController = {
   updateUserByID: function () {
     return function (req, res, next) {
       let sql =
-        "UPDATE userinfo SET u_name=?,u_sex=?,u_email=?,u_signature=?,u_birthday=? WHERE u_id=?;";
+        "UPDATE likes_tb SET l_status=1 WHERE w_id=? AND u_id = ?;";
       let params = [
-        req.body.u_name,
-        req.body.u_sex,
-        req.body.u_email,
-        req.body.u_signature,
-        req.body.u_birthday,
+        req.body.w_id,
         req.body.u_id];
         console.log(params)
       dbhelper.query(sql, params, (err, result) => {
