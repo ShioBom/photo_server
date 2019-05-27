@@ -98,29 +98,31 @@ module.exports = log_RegController = {
   Login: function() {
     return function(req, res, next) {
       let body = req.body;
-      console.log(req);
       let params = [body.uname, body.upwd];
-      let querySQL = "SELECT * FROM userinfo WHERE u_name=? AND u_pwd=?;";
-      dbhelper.query(querySQL, params, function(err, result) {
-        if (!err) {
-          if (result.length >= 1) {
-            res.json({
-              msg: "登录成功",
-              status: 1,
-              id: result[0].u_id,
-              portrait: result[0].u_portrait
-            });
+      if(req.body.uname==='' || req.body.upwd===''){
+        res.json({status:0,msg:"用户名和密码不能为空！"});
+      }else{
+        let querySQL = "SELECT * FROM userinfo WHERE u_name=? AND u_pwd=?;";
+        dbhelper.query(querySQL, params, function (err, result) {
+          if (!err) {
+            if (result.length >= 1) {
+              res.json({
+                msg: "登录成功",
+                status: 1,
+                id: result[0].u_id,
+                portrait: result[0].u_portrait
+              });
+            } else {
+              res.json({
+                status: 0,
+                msg: "用户名或密码错误",
+              });
+            }
           } else {
-            console.log("用户名或密码错误!");
-            res.json({
-              msg: "用户名或密码错误",
-              status: -1
-            });
+            res.json({status:-1,msg:"登录接口异常"});
           }
-        } else {
-          res.json("query出错了!");
-        }
-      });
+        });
+      }
     };
   },
   getFollowNum: function() {
@@ -188,8 +190,6 @@ module.exports = log_RegController = {
   uploadPortrait: function () {
     return function (req, res, next) {
       var file = req.file;
-      var u_id=req.u_id;
-      console.log(file,u_id);
       var pathName =
         "public/img/portrait/"+
           Math.random()

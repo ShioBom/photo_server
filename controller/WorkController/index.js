@@ -11,7 +11,7 @@ module.exports = {
       querySQL += "AS w INNER JOIN userinfo AS u ON w.u_id=u.u_id;";
       dbhelper.query(querySQL, [], function (err, result) {
         if (!err) {
-          res.json(result);
+          res.json({status:1,msg:"作品数据获取成功",result});
         } else {
           res.json("查询作品信息出错了!");
         }

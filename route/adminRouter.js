@@ -6,6 +6,7 @@ let multer = require("multer");
 const UserController = require("../controller/UserController");
 const WorkController = require("../controller/WorkController");
 const FollowController = require("../controller/FollowController");
+const StatisticsController = require("../controller/StatisticsController");
 
 const adminRouter = express.Router();
 module.exports = adminRouter;
@@ -15,7 +16,6 @@ adminRouter.post("/Register", UserController.Register());
 adminRouter.post("/send", UserController.send());
 //邮箱校验的接口
 adminRouter.get("/check/:id", UserController.check());
-
 //登录接口
 adminRouter.post("/Login", UserController.Login());
 //查询关注的人数
@@ -34,7 +34,6 @@ adminRouter.post("/storePortrait", UserController.storePortrait());
 adminRouter.post("/queryUserByID", UserController.queryUserByID());
 //根据关键字搜索用户
 adminRouter.post("/updateUserByID", UserController.updateUserByID());
-
 //关注
 adminRouter.post("/Follow", FollowController.Follow())
 //取消关注
@@ -77,6 +76,13 @@ adminRouter.post("/dislike", WorkController.dislike());
 adminRouter.post("/likeStatus", WorkController.likeStatus());
 //获取点赞数
 adminRouter.post("/getLikesNum", WorkController.getLikesNum());
+
+
+adminRouter.post("/queryWorkNum", StatisticsController.queryWorkNum());
+adminRouter.post("/queryWorkType", StatisticsController.queryWorkType());
+adminRouter.post("/queryCommentNum", StatisticsController.queryCommentNum());
+adminRouter.post("/queryLikeNum", StatisticsController.queryLikeNum());
+
 
 
 
