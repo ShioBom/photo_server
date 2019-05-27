@@ -39,7 +39,7 @@ adminRouter.post("/Follow", FollowController.Follow())
 //取消关注
 adminRouter.post("/unFollow", FollowController.unFollow())
 //查询某用户的关注列表
-adminRouter.post("/getFollowList", FollowController.getFollowList())
+adminRouter.get("/getFollowList", FollowController.getFollowList())
 //查询用户的粉丝列表
 adminRouter.post("/getFansList", FollowController.getFansList());
 //根据关键字搜索用户

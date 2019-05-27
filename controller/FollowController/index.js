@@ -103,7 +103,7 @@ module.exports = {
   },
   getFollowList: function() {
     return function(req, res, next) {
-      let params = req.body.u_id;
+      let params = req.query.u_id;
       let sql =
         "SELECT `following`,`u_portrait`,`u_name` FROM user_follow AS f INNER JOIN ";
       sql += "userinfo AS u ON f.following=u.u_id WHERE f.u_id=?;";
