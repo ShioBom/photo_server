@@ -14,6 +14,7 @@ module.exports = {
           res.json({status:1,msg:"作品数据获取成功",result});
         } else {
           res.json("查询作品信息出错了!");
+          console.log(err)
         }
       });
     };

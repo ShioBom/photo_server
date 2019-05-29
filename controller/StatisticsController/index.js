@@ -53,13 +53,13 @@ module.exports = log_RegController = {
                 req.body.u_id
             ]
             console.log(params);
-            let sql = "SELECT COUNT(c_time) AS num,c_time FROM comment_tb WHERE c_time BETWEEN ? AND ? AND w_id IN "
-            sql += "(SELECT w_id FROM works WHERE u_id = ?)GROUP BY c_time"
+            let sql = `SELECT DATE_FORMAT( c_time,"%Y-%m-%d") AS c_time,COUNT(*) AS num FROM comment_tb `
+            sql += `WHERE c_time BETWEEN ? AND ? AND w_id IN (SELECT w_id FROM works WHERE u_id = ?) `
+            sql += `GROUP BY  DATE_FORMAT( c_time,"%Y-%m-%d")`
             dbhelper.query(sql, params, (err, result) => {
                 if (!err) {
                     if (result.length >= 1) {
                         res.json({ status: 1, msg: "数据获取成功", result });
-
                     } else {
                         res.json({ status: 0, msg: "你还没有发布过作品哦" });
                     }
@@ -77,8 +77,9 @@ module.exports = log_RegController = {
                 req.body.date2,
                 req.body.u_id
             ]
-            let sql = "SELECT COUNT(l_time) AS num,l_time FROM likes_tb WHERE l_status=1 "
-            sql +="AND l_time BETWEEN ? AND ? AND w_id IN (SELECT w_id FROM works WHERE u_id = ?)GROUP BY l_time"
+            let sql = `SELECT DATE_FORMAT( l_time, "%Y-%m-%d" ) AS l_time,COUNT(*) AS num FROM likes_tb `
+            sql +=`WHERE l_status=1 AND l_time BETWEEN ? AND ? AND w_id IN (SELECT w_id FROM works WHERE u_id = ?)`
+            sql += `GROUP BY  DATE_FORMAT( l_time,"%Y-%m-%d")`;
             dbhelper.query(sql, params, (err, result) => {
                 if (!err) {
                     if (result.length >= 1) {
