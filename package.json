@@ -20,7 +20,7 @@
     "react-transition-group": "^2.5.3",
     "redux": "^4.0.1",
     "sass-loader": "^7.1.0",
-    "swiper": "^4.4.6"
+    "swiper": "^6.5.1"
   },
   "scripts": {
     "start": "react-scripts start",
